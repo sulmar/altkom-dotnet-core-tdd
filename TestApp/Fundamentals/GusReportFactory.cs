@@ -30,7 +30,17 @@ namespace TestApp.Fundamentals.Gus
             // F -> Działalność fizyczna
             // nieznany -> NotSupportedException
 
-            throw new NotImplementedException();
+            switch(type)
+            {
+                case "P":
+                case "LP":
+                case "LF": return new LegalPersonality();
+
+                case "F": return new SoleTraderReport();
+
+                default:
+                    throw new NotSupportedException(type);
+            }
         }
     }
 

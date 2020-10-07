@@ -19,6 +19,7 @@ namespace TestApp.xUnitTests
 
             // Assert
             Assert.IsType<LegalPersonality>(result);
+            Assert.IsAssignableFrom<Report>(result);
         }
 
         [Fact]
@@ -31,6 +32,7 @@ namespace TestApp.xUnitTests
 
             // Assert
             Assert.IsType<LegalPersonality>(result);
+            Assert.IsAssignableFrom<Report>(result);
         }
 
         [Fact]
@@ -43,6 +45,7 @@ namespace TestApp.xUnitTests
 
             // Assert
             Assert.IsType<LegalPersonality>(result);
+            Assert.IsAssignableFrom<Report>(result);
         }
 
         [Fact]
@@ -55,6 +58,7 @@ namespace TestApp.xUnitTests
 
             // Assert
             Assert.IsType<SoleTraderReport>(result);
+            Assert.IsAssignableFrom<Report>(result);
         }
 
         [Fact]
