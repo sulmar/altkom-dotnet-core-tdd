@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Text;
 
 namespace TestApp.Fundamentals
@@ -89,14 +90,41 @@ namespace TestApp.Fundamentals
 
     public class EmailMessageService : IMessageService
     {
+        public DateTime LastSentDate { get; private set; }
+
         public void Send(Message message)
         {
+            if (message == null)
+                throw new ArgumentNullException(nameof(message));
+
+            Validate(message);
+
             SendEmail(message.From, message.To, message.Content);
+        }
+
+        private static void Validate(Message message)
+        {
+            if (string.IsNullOrEmpty(message.From))
+            {
+                throw new ArgumentException(nameof(Message.From));
+            }
+
+            if (string.IsNullOrEmpty(message.To))
+            {
+                throw new ArgumentException(nameof(Message.To));
+            }
+
+            if (string.IsNullOrEmpty(message.Content))
+            {
+                throw new ArgumentException(nameof(Message.Content));
+            }
         }
 
         private void SendEmail(string from, string to, string message)
         {
             Console.WriteLine($"Sending {message}...");
+
+            LastSentDate = DateTime.UtcNow;
         }
     }
 
