@@ -6,6 +6,20 @@ using TestApp.Fundamentals;
 
 namespace TestApp.Mocking
 {
+
+    #region Models
+
+    public class Vehicle
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Model { get; set; }
+    }
+
+    #endregion
+
+    #region ViewModels
+
     public class VehiclesViewModel
     {
         public ICollection<Vehicle> Vehicles { get; private set; }
@@ -31,6 +45,8 @@ namespace TestApp.Mocking
         public bool CanSearch => true;
 
     }
+
+    #endregion
 
     public interface IEntityRepository<TEntity>
     {
