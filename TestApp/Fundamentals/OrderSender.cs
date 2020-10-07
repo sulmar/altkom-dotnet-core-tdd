@@ -146,9 +146,10 @@ namespace TestApp.Fundamentals
             Message message = new Message { Content = $"Koszt dostawy {shippingCost}" };
 
             messageService.Send(message);
-        }
 
-     
-       
+            // TODO:
+            // dodać zdarzenie OrderSent z argumentem Order 
+            // i utworzyć test sprawdzający czy zamówienie zostało wysłane
+        }
     }
 }

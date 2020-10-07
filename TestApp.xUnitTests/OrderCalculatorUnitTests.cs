@@ -16,17 +16,21 @@ namespace TestApp.xUnitTests
             orderShippingCalculator = new OrderCalculator();
         }
 
+        private const decimal shippingCost = 9.99m;
+        private const decimal shippingFree = 0m;
+        private const decimal totalAmountLimit = 1000m;
+
         [Fact]
         public void CalculateShippingCost_TotalAmountBelow1000_ReturnsNotZero()
         {
             // Arrange
-            Order order = new Order { TotalAmount = 999 };
+            Order order = new Order { TotalAmount = totalAmountLimit - 0.01m };
 
             // Act
             var result = orderShippingCalculator.CalculateShippingCost(order);
 
             // Assert
-            Assert.Equal(9.99m, result);
+            Assert.Equal(shippingCost, result);
         }
 
 
@@ -34,13 +38,13 @@ namespace TestApp.xUnitTests
         public void CalculateShippingCost_TotalAmountEqualOrAbove1000_ReturnsZero()
         {
             // Arrange
-            Order order = new Order { TotalAmount = 1000 };
+            Order order = new Order { TotalAmount = totalAmountLimit };
 
             // Act
             var result = orderShippingCalculator.CalculateShippingCost(order);
 
             // Assert
-            Assert.Equal(0, result);
+            Assert.Equal(shippingFree, result);
         }
 
         [Fact]
