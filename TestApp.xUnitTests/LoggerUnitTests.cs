@@ -22,6 +22,11 @@ namespace TestApp.xUnitTests
 
             // Asserts
             Assert.NotEqual(DateTime.MinValue, id);
+            
+            //Assert.Raises<EventArgs<DateTime>>(
+            //    h => logger.MessageLogged += h,
+            //    h => logger.MessageLogged -= h,
+            //    () => logger.Log("a"));
 
         }
     }

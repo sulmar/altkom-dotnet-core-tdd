@@ -133,6 +133,8 @@ namespace TestApp.Fundamentals
         private readonly IOrderShippingCalculator orderShippingCalculator;
         private readonly IMessageService messageService;
 
+        public EventHandler<Order> OrderSent;
+
         public OrderSender(IOrderShippingCalculator orderShippingCalculator, IMessageService messageService)
         {
             this.orderShippingCalculator = orderShippingCalculator ?? throw new ArgumentNullException(nameof(orderShippingCalculator));
@@ -143,13 +145,15 @@ namespace TestApp.Fundamentals
         {
             decimal shippingCost = orderShippingCalculator.CalculateShippingCost(order);
 
-            Message message = new Message { Content = $"Koszt dostawy {shippingCost}" };
+            Message message = new Message { From = "a", To = "b",  Content = $"Koszt dostawy {shippingCost}" };
 
             messageService.Send(message);
 
             // TODO:
             // dodać zdarzenie OrderSent z argumentem Order 
             // i utworzyć test sprawdzający czy zamówienie zostało wysłane
+
+            OrderSent?.Invoke(this, order);
         }
     }
 }
