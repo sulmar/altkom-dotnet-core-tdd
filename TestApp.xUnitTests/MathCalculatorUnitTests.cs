@@ -1,27 +1,19 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using Xunit;
 
-namespace TestApp.UnitTests
+namespace TestApp.xUnitTests
 {
-
-    // MSTest
-    
-    [TestClass]
     public class MathCalculatorUnitTests
     {
         private MathCalculator mathCalculator;
 
-        [TestInitialize]
-        public void Setup()
+        // Method_Scenario_Behavior
+        public MathCalculatorUnitTests()
         {
-            // Arrange
             mathCalculator = new MathCalculator();
         }
 
-
-        // Method_Scenario_Behavior
-
-
-        [TestMethod]
+        [Fact]
         public void Add_WhenCalled_ReturnsTheSumOfArguments()
         {
             // Arrange
@@ -30,11 +22,10 @@ namespace TestApp.UnitTests
             var result = mathCalculator.Add(1, 2);
 
             // Assert
-            Assert.AreEqual(3, result);
-
+            Assert.Equal(3, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Max_FirstArgumentIsGreater_ReturnsTheFirstArgument()
         {
             // Arrange
@@ -43,10 +34,10 @@ namespace TestApp.UnitTests
             var result = mathCalculator.Max(2, 1);
 
             // Assert
-            Assert.AreEqual(2, result);
+            Assert.Equal(2, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Max_SecondsArgumentIsGreater_ReturnsTheSecondArgument()
         {
             // Arrange
@@ -55,10 +46,10 @@ namespace TestApp.UnitTests
             var result = mathCalculator.Max(1, 2);
 
             // Assert
-            Assert.AreEqual(2, result);
+            Assert.Equal(2, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Max_ArgumentsAreEqual_ReturnsTheSameArgument()
         {
             // Arrange
@@ -67,13 +58,13 @@ namespace TestApp.UnitTests
             var result = mathCalculator.Max(1, 1);
 
             // Assert
-            Assert.AreEqual(1, result);
+            Assert.Equal(1, result);
         }
 
-        [DataRow(2, 1, 2, DisplayName = "FirstArgumentIsGreater_ReturnsTheFirstArgument")]
-        [DataRow(1, 2, 2, DisplayName = "Max_SecondsArgumentIsGreater_ReturnsTheSecondArgument")]
-        [DataRow(1, 1, 1, DisplayName = "Max_ArgumentsAreEqual_ReturnsTheSameArgument")]
-        [DataTestMethod]
+        [Theory]
+        [InlineData(2, 1, 2)]
+        [InlineData(1, 2, 2)]
+        [InlineData(1, 1, 1)]
         public void Max_Arguments_ReturnsValidArgument(int first, int second, int expected)
         {
             // Arrange
@@ -82,7 +73,7 @@ namespace TestApp.UnitTests
             var result = mathCalculator.Max(first, second);
 
             // Assert
-            Assert.AreEqual(expected, result);
+            Assert.Equal(expected, result);
         }
     }
 }
