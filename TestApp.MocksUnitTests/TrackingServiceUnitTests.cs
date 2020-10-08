@@ -13,20 +13,24 @@ namespace TestApp.MocksUnitTests
     {
         private ITrackingService trackingService;
 
+        private Mock<IFileReader> mockFileReader;
+
+        public TrackingServiceUnitTests()
+        {
+            mockFileReader = new Mock<IFileReader>();
+            trackingService = new TrackingService(mockFileReader.Object);
+        }
+
         [Fact]
         public void Get_ValidJson_ShouldReturnsLocation()
         {
             // Arrange
-            Mock<IFileReader> mockFileReader = new Mock<IFileReader>();
-
             mockFileReader
                 .Setup(fr => fr.ReadAllText(It.IsAny<string>()))
                 .Returns(JsonConvert.SerializeObject(new Location(52.00, 18.01)));
 
-            IFileReader fileReader = mockFileReader.Object;
-
-            trackingService = new TrackingService(fileReader);
-
+            //IFileReader fileReader = mockFileReader.Object;
+            //trackingService = new TrackingService(fileReader);
 
             // Act
             var result = trackingService.Get();
@@ -40,19 +44,14 @@ namespace TestApp.MocksUnitTests
         public void Get_InvalidJson_ShouldThrowFormatException()
         {
             // Arrange
-            Mock<IFileReader> mockFileReader = new Mock<IFileReader>();
-
             mockFileReader
                 .Setup(fr => fr.ReadAllText(It.IsAny<string>()))
                 .Returns("a");
 
-            IFileReader fileReader = mockFileReader.Object;
-
-            trackingService = new TrackingService(fileReader);
-
             // Act
             Action act = () => trackingService.Get();
 
+            // Assert
             act.Should().Throw<FormatException>();
 
         }
@@ -61,19 +60,14 @@ namespace TestApp.MocksUnitTests
         public void Get_FileEmpty_ShouldThrowApplicationException()
         {
             // Arrange
-            Mock<IFileReader> mockFileReader = new Mock<IFileReader>();
-
             mockFileReader
                 .Setup(fr => fr.ReadAllText(It.IsAny<string>()))
                 .Returns(string.Empty);
 
-            IFileReader fileReader = mockFileReader.Object;
-
-            trackingService = new TrackingService(fileReader);
-
             // Act
             Action act = () => trackingService.Get();
 
+            // Assert
             act.Should().Throw<ApplicationException>();
         }
     }
