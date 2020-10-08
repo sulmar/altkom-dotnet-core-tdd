@@ -177,6 +177,10 @@ namespace TestApp.Mocking
 
     public class Location
     {
+        public Location()
+        {
+
+        }
         public Location(double latitude, double longitude)
         {
             Latitude = latitude;

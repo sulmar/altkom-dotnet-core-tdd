@@ -9,6 +9,9 @@ namespace TestApp.MocksUnitTests
 {
     // dotnet add package Moq
     // dotnet add package FluentAssertions
+
+
+    // zapis imperatywny
     public class TrackingServiceUnitTests
     {
         private ITrackingService trackingService;
@@ -70,6 +73,6 @@ namespace TestApp.MocksUnitTests
             // Assert
             act.Should().Throw<ApplicationException>();
         }
-    }
 
+    }
 }

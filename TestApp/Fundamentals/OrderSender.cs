@@ -18,6 +18,7 @@ namespace TestApp.Fundamentals
         public string Number { get; set; }
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
+        public bool IsValid => TotalAmount > 0;
     }
 
     #endregion
@@ -147,8 +148,9 @@ namespace TestApp.Fundamentals
             decimal shippingCost = orderShippingCalculator.CalculateShippingCost(order);
 
             Message message = new Message { From = "a", To = "b",  Content = $"Koszt dostawy {shippingCost}" };
-
-            messageService.Send(message);
+            
+             if (order.IsValid)
+                messageService.Send(message);
 
             // TODO:
             // dodać zdarzenie OrderSent z argumentem Order 
