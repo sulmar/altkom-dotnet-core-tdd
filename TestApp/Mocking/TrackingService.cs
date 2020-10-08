@@ -5,11 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace TestApp.Mocking
 {
+
     // dotnet add package NGeoHash
+
+    /*
     public class TrackingService
     {
         public Location Get()
@@ -41,6 +45,77 @@ namespace TestApp.Mocking
 
                 return string.Join(",", path);
                     
+            }
+        }
+    }
+
+    */
+
+    public interface ITrackingService
+    {
+        Location Get();
+    }
+
+    public interface IFileReader
+    {
+        string ReadAllText(string path);
+    }
+
+    public class FileReader : IFileReader
+    {
+        public string ReadAllText(string path)
+        {
+            return File.ReadAllText(path);
+        }
+    }
+
+   
+
+    public class TrackingService : ITrackingService
+    {
+        private readonly IFileReader fileReader;
+
+        public TrackingService(IFileReader fileReader)
+        {
+            this.fileReader = fileReader;
+        }
+
+        public Location Get()
+        {
+            string json = fileReader.ReadAllText("tracking.txt");
+
+            try
+            {
+                Location location = JsonConvert.DeserializeObject<Location>(json);
+
+                if (location == null)
+                    throw new ApplicationException("Error parsing the location");
+
+                return location;
+            }
+            catch(JsonReaderException)
+            {
+                throw new FormatException();
+            }
+        }
+
+
+        // geohash.org
+        public string GetPathAsGeoHash()
+        {
+            IList<string> path = new List<string>();
+
+            using (var context = new TrackingContext())
+            {
+                var locations = context.Trackings.Where(t => t.ValidGPS).Select(t => t.Location).ToList();
+
+                foreach (Location location in locations)
+                {
+                    path.Add(GeoHash.Encode(location.Latitude, location.Longitude));
+                }
+
+                return string.Join(",", path);
+
             }
         }
     }

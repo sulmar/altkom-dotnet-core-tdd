@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using System.IO;
 using System.Text;
 
 namespace TestApp.Fundamentals
@@ -122,7 +123,7 @@ namespace TestApp.Fundamentals
 
         private void SendEmail(string from, string to, string message)
         {
-            Console.WriteLine($"Sending {message}...");
+            File.WriteAllText(@"x:\temp\message.txt", $"Sending {message}...");
 
             LastSentDate = DateTime.UtcNow;
         }
