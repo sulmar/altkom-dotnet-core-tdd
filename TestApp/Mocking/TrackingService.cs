@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TestApp.Mocking
 {
@@ -56,9 +57,15 @@ namespace TestApp.Mocking
         Location Get();
     }
 
+   
     public interface IFileReader
     {
         string ReadAllText(string path);
+    }
+
+    public interface IFileReaderAsync
+    {
+        Task<string> ReadAllTextAsync(string path);
     }
 
     public class FileReader : IFileReader
@@ -69,9 +76,46 @@ namespace TestApp.Mocking
         }
     }
 
-   
+    public interface ITrackingServiceAsync
+    {
+        Task<Location> GetAsync();
+    }
 
-    public class TrackingService : ITrackingService
+    public class TrackingServiceAsync : ITrackingServiceAsync
+    {
+        private readonly IFileReaderAsync fileReader;
+
+        public TrackingServiceAsync(IFileReaderAsync fileReader)
+        {
+            this.fileReader = fileReader;
+        }
+
+        public async Task<Location> GetAsync()
+        {
+            string json = await fileReader.ReadAllTextAsync("tracking.json");
+
+            try
+            {
+                Location location = JsonConvert.DeserializeObject<Location>(json);
+
+                if (location == null)
+                    throw new ApplicationException("Error parsing the location");
+
+                return location;
+            }
+            catch (JsonReaderException)
+            {
+                throw new FormatException();
+            }
+        }
+
+      
+
+    }
+
+
+
+        public class TrackingService : ITrackingService
     {
         private readonly IFileReader fileReader;
 
@@ -82,7 +126,7 @@ namespace TestApp.Mocking
 
         public Location Get()
         {
-            string json = fileReader.ReadAllText("tracking.txt");
+            string json = fileReader.ReadAllText("tracking.json");
 
             try
             {
@@ -97,6 +141,11 @@ namespace TestApp.Mocking
             {
                 throw new FormatException();
             }
+        }
+
+        public Task<Location> GetAsync()
+        {
+            return Task.FromResult(Get());
         }
 
 
