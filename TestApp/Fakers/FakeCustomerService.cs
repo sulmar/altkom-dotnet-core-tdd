@@ -16,6 +16,7 @@ namespace TestApp.Fakers
         public CustomerFaker()
         {
             StrictMode(true);
+            UseSeed(0); 
             RuleFor(p => p.Id, f => f.Random.Guid());
             RuleFor(p => p.FirstName, f => f.Person.FirstName);
             RuleFor(p => p.LastName, f => f.Person.LastName);
