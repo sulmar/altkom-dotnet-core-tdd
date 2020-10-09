@@ -75,8 +75,11 @@ namespace TestApp.Mocking
         }
     }
 
+
+
     public class SalesReport : Report
     {
+        public string Title { get; set; }
         public TimeSpan TotalTime { get; set; }
 
         public decimal TotalAmount { get; set; }
@@ -95,21 +98,133 @@ namespace TestApp.Mocking
 
     #endregion
 
-    public class ReportService
+
+    public interface ISalesReportBuilder
+    {
+        void Add(string title);
+        void Add(IEnumerable<Order> orders);
+        SalesReport Build();
+    }
+
+    public class SalesReportBuilder : ISalesReportBuilder
+    {
+        private string title;
+        private IEnumerable<Order> orders;
+
+        public void Add(string title)
+        {
+            this.title = title;
+        }
+
+        public void Add(IEnumerable<Order> orders)
+        {
+            this.orders = orders;
+        }
+
+        public SalesReport Build()
+        {
+            SalesReport salesReport = Create(orders);
+            salesReport.Title = title;
+
+            return salesReport;
+        }
+
+        private static SalesReport Create(IEnumerable<Order> orders)
+        {
+            SalesReport salesReport = new SalesReport();
+
+            salesReport.TotalAmount = orders.Sum(o => o.Total);
+
+            return salesReport;
+        }
+    }
+
+    public interface IReportService
+    {
+        Task SendSalesReportEmailAsync(DateTime date);
+    }
+
+    public interface IOrderService
+    {
+        IEnumerable<Order> Get(DateTime from, DateTime to);
+    }
+
+    public interface IUserService
+    {
+        IEnumerable<User> GetBosses();
+        User GetBot();
+    }
+
+    public class DbUserService : IUserService
+    {
+        private readonly SalesContext salesContext;
+
+        public DbUserService(SalesContext salesContext)
+        {
+            this.salesContext = salesContext;
+        }
+
+        public IEnumerable<User> GetBosses()
+        {
+           return salesContext.Users.OfType<Employee>().Where(e => e.IsBoss).ToList();
+        }
+
+        public User GetBot()
+        {
+            return salesContext.Users.OfType<Bot>().Single();
+        }
+    }
+
+    public interface ILogger
+    {
+        void Info(string message);
+        void Error(string message);
+    }
+
+    public class NLogLogger : ILogger
+    {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public void Error(string message)
+        {
+            Logger.Error(message);
+        }
+
+        public void Info(string message)
+        {
+            Logger.Info(message);
+        }
+    }
+
+    public class ReportService : IReportService
     {
         private const string apikey = "your_secret_key";
 
         public delegate void ReportSentHandler(object sender, ReportSentEventArgs e);
         public event ReportSentHandler ReportSent;
 
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private readonly IOrderService orderService;
+        private readonly ISendGridClient client;
+        private readonly IUserService userService;
+        private readonly ILogger logger;
+        private readonly ISalesReportBuilder salesReportBuilder;
 
-
+        public ReportService(
+            IOrderService orderService, 
+            ISendGridClient sendGridClient, 
+            IUserService userService, 
+            ILogger logger,
+            ISalesReportBuilder salesReportBuilder)
+        {
+            this.orderService = orderService;
+            this.client = sendGridClient;
+            this.userService = userService;
+            this.logger = logger;
+            this.salesReportBuilder = salesReportBuilder;
+        }
 
         public async Task SendSalesReportEmailAsync(DateTime date)
         {
-            OrderService orderService = new OrderService();
-
             var orders = orderService.Get(date.AddDays(-7), date);
 
             if (!orders.Any())
@@ -117,16 +232,14 @@ namespace TestApp.Mocking
                 return;
             }
 
-            SalesReport report = Create(orders);
+            salesReportBuilder.Add(orders);
+            salesReportBuilder.Add("Raport sprzedaży");
 
-            // dotnet add package SendGrid
-            SendGridClient client = new SendGridClient(apikey);
+            SalesReport report = salesReportBuilder.Build();
 
-            SalesContext salesContext = new SalesContext();
+            var recipients = userService.GetBosses();
 
-            var recipients = salesContext.Users.OfType<Employee>().Where(e => e.IsBoss).ToList();
-
-            var sender = salesContext.Users.OfType<Bot>().Single();
+            var sender = userService.GetBot();
 
             foreach (var recipient in recipients)
             {
@@ -141,7 +254,7 @@ namespace TestApp.Mocking
                     report.ToHtml());
 
 
-                Logger.Info($"Wysyłanie raportu do {recipient.FirstName} {recipient.LastName} <{recipient.Email}>...");
+                logger.Info($"Wysyłanie raportu do {recipient.FirstName} {recipient.LastName} <{recipient.Email}>...");
 
                 var response = await client.SendEmailAsync(message);
 
@@ -149,25 +262,18 @@ namespace TestApp.Mocking
                 {
                     ReportSent?.Invoke(this, new ReportSentEventArgs(DateTime.Now));
 
-                    Logger.Info($"Raport został wysłany.");
+                    logger.Info($"Raport został wysłany.");
                 }
                 else
                 {
-                    Logger.Error($"Błąd podczas wysyłania raportu.");
+                    logger.Error($"Błąd podczas wysyłania raportu.");
 
                     throw new ApplicationException("Błąd podczas wysyłania raportu.");
                 }
             }
         }
 
-        private static SalesReport Create(IEnumerable<Order> orders)
-        {
-            SalesReport salesReport = new SalesReport();
-
-            salesReport.TotalAmount = orders.Sum(o => o.Total);
-
-            return salesReport;
-        }
+        
     }
 
     public class ReportSentEventArgs : EventArgs
@@ -180,13 +286,13 @@ namespace TestApp.Mocking
         }
     }
 
-    public class OrderService
+    public class OrderService : IOrderService
     {
         private readonly SalesContext context;
 
-        public OrderService()
+        public OrderService(SalesContext context)
         {
-            context = new SalesContext();
+            this.context = context;
         }
 
         public IEnumerable<Order> Get(DateTime from, DateTime to)
