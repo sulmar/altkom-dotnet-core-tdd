@@ -26,5 +26,10 @@ namespace VehiclesApi.FakeServices
         {
             return vehicles;
         }
+
+        public Vehicle Get(int id)
+        {
+            return vehicles.SingleOrDefault(v => v.Id == id);
+        }
     }
 }

@@ -27,5 +27,15 @@ namespace VehiclesApi.Controllers
 
             return Ok(vehicles);
         }
+
+        // GET api/vehicles/{id}
+
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            var vehicle = vehicleService.Get(id);
+
+            return Ok(vehicle);
+        }
     }
 }

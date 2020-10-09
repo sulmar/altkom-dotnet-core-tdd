@@ -9,5 +9,6 @@ namespace VehiclesApi.IServices
     public interface IVehicleService
     {
         IEnumerable<Vehicle> Get();
+        Vehicle Get(int id);
     }
 }
