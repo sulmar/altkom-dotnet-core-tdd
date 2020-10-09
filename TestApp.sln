@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehiclesApi", "VehiclesApi\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehiclesApi.IntegrationTests", "VehiclesApi.IntegrationTests\VehiclesApi.IntegrationTests.csproj", "{0F1C7E60-E6EB-4825-8906-34DC43A3BE8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpcConsoleClient", "RpcConsoleClient\RpcConsoleClient.csproj", "{D5323A1B-746B-4B30-B891-B21EFA71BE19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{0F1C7E60-E6EB-4825-8906-34DC43A3BE8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F1C7E60-E6EB-4825-8906-34DC43A3BE8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F1C7E60-E6EB-4825-8906-34DC43A3BE8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5323A1B-746B-4B30-B891-B21EFA71BE19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5323A1B-746B-4B30-B891-B21EFA71BE19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5323A1B-746B-4B30-B891-B21EFA71BE19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5323A1B-746B-4B30-B891-B21EFA71BE19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -15,9 +15,5 @@
     <ProjectReference Include="..\TestApp\TestApp.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UseCases\" />
-  </ItemGroup>
-
 
 </Project>
