@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
+using TestApp.Fakers;
 using VehiclesApi.IServices;
 
 namespace VehiclesApi.Controllers
@@ -12,6 +13,7 @@ namespace VehiclesApi.Controllers
     public class VehiclesController : ControllerBase
     {
         private readonly IVehicleService vehicleService;
+       // private readonly RemoveCustomerUseCase removeCustomerUseCase;
 
         public VehiclesController(IVehicleService vehicleService)
         {
@@ -36,6 +38,13 @@ namespace VehiclesApi.Controllers
             var vehicle = vehicleService.Get(id);
 
             return Ok(vehicle);
+        }
+
+
+        public IActionResult Remove(Guid id)
+        {
+            throw new NotImplementedException();
+           
         }
     }
 }

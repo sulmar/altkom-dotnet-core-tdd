@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using TestApp.Mocking;
 
-namespace TestApp.Fakers
+namespace VehiclesApi.Domain
 {
     public interface ICustomerService
     {
@@ -12,8 +11,4 @@ namespace TestApp.Fakers
         void Update(Customer customer);
         void Remove(Guid id);
     }
-
-
-
-    
 }
