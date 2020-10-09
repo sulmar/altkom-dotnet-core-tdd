@@ -14,8 +14,6 @@ using Xunit;
 
 namespace VehiclesApi.IntegrationTests
 {
-    
-
     public class BasicTests : IClassFixture<WebApplicationFactory<VehiclesApi.Startup>>
     {
         private readonly WebApplicationFactory<VehiclesApi.Startup> _factory;
@@ -24,8 +22,6 @@ namespace VehiclesApi.IntegrationTests
         {
             _factory = factory;
         }
-
-
 
         [Fact]
         public async void Get_WhenCalled_ReturnsVehicles()
