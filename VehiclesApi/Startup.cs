@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using VehiclesApi.FakeServices;
 using VehiclesApi.IServices;
+using VehiclesApi.UseCases;
 
 namespace VehiclesApi
 {
@@ -28,6 +29,7 @@ namespace VehiclesApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IVehicleService, FakeVehicleService>();
+            services.AddScoped<GetCustomerUseCase>();
 
             services.AddControllers();
         }

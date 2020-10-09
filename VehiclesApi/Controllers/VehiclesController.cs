@@ -6,18 +6,22 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using TestApp.Fakers;
 using VehiclesApi.IServices;
+using VehiclesApi.UseCases;
 
 namespace VehiclesApi.Controllers
 {
     [Route("api/vehicles")]
     public class VehiclesController : ControllerBase
     {
-        private readonly IVehicleService vehicleService;
-       // private readonly RemoveCustomerUseCase removeCustomerUseCase;
+        // private readonly IVehicleService vehicleService;
 
-        public VehiclesController(IVehicleService vehicleService)
+        private readonly GetCustomerUseCase getCustomerUseCase;
+        private readonly RemoveCustomerUseCase removeCustomerUseCase;
+
+        public VehiclesController(GetCustomerUseCase getCustomerUseCase, RemoveCustomerUseCase removeCustomerUseCase)
         {
-            this.vehicleService = vehicleService;
+            this.getCustomerUseCase = getCustomerUseCase;
+            this.removeCustomerUseCase = removeCustomerUseCase;
         }
 
         // GET api/vehicles
@@ -25,17 +29,19 @@ namespace VehiclesApi.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var vehicles = vehicleService.Get();
+            // var vehicles = vehicleService.Get();
+            // return Ok(vehicles);
 
-            return Ok(vehicles);
+            throw new NotImplementedException();
+
         }
 
         // GET api/vehicles/{id}
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult Get(Guid id)
         {
-            var vehicle = vehicleService.Get(id);
+            var vehicle = getCustomerUseCase.Execute(id);
 
             return Ok(vehicle);
         }

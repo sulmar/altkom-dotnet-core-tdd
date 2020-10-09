@@ -7,11 +7,11 @@ using VehiclesApi.Domain;
 namespace VehiclesApi.UseCases
 {
 
-    public class AddCustomerUseCase : IUseCase<Guid, Customer>
+    public class GetCustomerUseCase : IUseCase<Guid, Customer>
     {
         private readonly ICustomerService customerService;
 
-        public AddCustomerUseCase(ICustomerService customerService)
+        public GetCustomerUseCase(ICustomerService customerService)
         {
             this.customerService = customerService;
         }
