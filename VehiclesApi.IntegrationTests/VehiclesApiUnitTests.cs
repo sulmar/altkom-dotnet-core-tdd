@@ -82,7 +82,7 @@ namespace VehiclesApi.IntegrationTests
 
         public Vehicle Get(int id)
         {
-            return null;
+            return new Vehicle { Id = id, Model = "Ferrari" };
         }
     }
 
@@ -94,12 +94,18 @@ namespace VehiclesApi.IntegrationTests
         public VehiclesApiUnitTests()
         { 
            server = new TestServer(new WebHostBuilder()
+               .UseStartup<Startup>()
                .ConfigureServices(services=>
                {
-                   // services.Replace<IVehicleService, MyFakeVehicleService>(ServiceLifetime.Singleton);
+                   var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(FakeServices.FakeVehicleService));
+
+                   services.Remove(descriptor);
+
+                   services.AddSingleton<IVehicleService, MyFakeVehicleService>();
+                   
                })
                .UseEnvironment("Testing")
-               .UseStartup<Startup>());
+               );
 
            client = server.CreateClient();
         }
