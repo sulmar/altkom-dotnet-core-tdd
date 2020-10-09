@@ -6,27 +6,38 @@ using System.Text;
 
 namespace RpcConsoleClient
 {
-    public class RpcClient
+
+    public interface IRpcClient
     {
-        private readonly IConnection connection;
-        private readonly IModel channel;
-        private readonly string replyQueueName;
-        private readonly EventingBasicConsumer consumer;
-        private readonly BlockingCollection<string> respQueue = new BlockingCollection<string>();
-        private readonly IBasicProperties props;
-        public RpcClient(IConnection connection)
+        string Call(string message);
+    }
+
+    public class RpcClient : IRpcClient
+    {
+        private  IConnection connection;
+        private  IModel channel;
+        private  string replyQueueName;
+        private  EventingBasicConsumer consumer;
+        private  BlockingCollection<string> respQueue = new BlockingCollection<string>();
+        private  IBasicProperties props;
+        public RpcClient()
         {
+           
+          
+        }
+
+        public void Init()
+        {
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+
+            IConnection connection = factory.CreateConnection();
+
             channel = connection.CreateModel();
             replyQueueName = channel.QueueDeclare().QueueName;
             consumer = new EventingBasicConsumer(channel);
             props = channel.CreateBasicProperties();
 
-            Init();
-          
-        }
 
-        private void Init()
-        {           
             var correlationId = Guid.NewGuid().ToString();
             props.CorrelationId = correlationId;
             props.ReplyTo = replyQueueName;
@@ -74,7 +85,7 @@ namespace RpcConsoleClient
 
             var connection = factory.CreateConnection();
 
-            var rpcClient = new RpcClient(connection);
+            var rpcClient = new RpcClient();
 
             Console.WriteLine(" [x] Requesting fib(30)");
             var response = rpcClient.Call("30");

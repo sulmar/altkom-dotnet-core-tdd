@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using FluentAssertions;
+using Moq;
 using RabbitMQ.Client;
 using RpcConsoleClient;
 using System;
@@ -10,23 +11,33 @@ namespace TestApp.MocksUnitTests
 {
     public class RpcClientUnitTests
     {
-
-
         [Fact]
         public void Call_ValidMessage_ReturnsString()
         {
-
             // Arrange
+           IRpcClient client = Mock.Of<IRpcClient>(c => c.Call("ping") == "pong");
 
-            //    var factory = new ConnectionFactory() { HostName = "localhost" };
+            //var mockClient = new Mock<IRpcClient>();
+            //mockClient
+            //  .Setup(c => c.Call("ping"))
+            //  .Returns("pong");
+            //var client = mockClient.Object;
 
-            IModel model = Mock.Of<IModel>(channel => channel.QueueDeclare().QueueName == "abc"));
+            // Act
+            var response = client.Call("ping");
 
-            IConnection connection = Mock.Of<IConnection>(c=>c.CreateModel() == )
+            // Assert
+            response.Should().Be("pong");
+        }
+    }
 
-            var connection = factory.CreateConnection();
 
-            var rpcClient = new RpcClient(connection);
+
+    public class MyClient : IMyClient
+    {
+        public virtual string Call(string message)
+        {
+            return message;
         }
     }
 }
