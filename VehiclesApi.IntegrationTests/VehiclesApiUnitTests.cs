@@ -98,6 +98,7 @@ namespace VehiclesApi.IntegrationTests
                {
                    // services.Replace<IVehicleService, MyFakeVehicleService>(ServiceLifetime.Singleton);
                })
+               .UseEnvironment("Testing")
                .UseStartup<Startup>());
 
            client = server.CreateClient();
