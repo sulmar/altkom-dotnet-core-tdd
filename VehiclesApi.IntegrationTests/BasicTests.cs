@@ -14,6 +14,7 @@ using Xunit;
 
 namespace VehiclesApi.IntegrationTests
 {
+    // https://docs.microsoft.com/pl-pl/aspnet/core/test/integration-tests?view=aspnetcore-3.1#sut-environment
     public class BasicTests : IClassFixture<WebApplicationFactory<VehiclesApi.Startup>>
     {
         private readonly WebApplicationFactory<VehiclesApi.Startup> _factory;
